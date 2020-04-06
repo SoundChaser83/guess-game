@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Guess_Color_game
 {
-    class Dot
+    class Dot //Hi github funny init?
     {
         string Symbol { get; set; } = " █";        //Saving ⚪ symbol for easy reference
         string Color { get; set; }
