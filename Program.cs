@@ -15,7 +15,7 @@ namespace Guess_Color_game
             bool clearToGo = false;
             List<List<Dot>> allGuesses = new List<List<Dot>>();
             List<Dot> currentGuess = new List<Dot>();
-            
+            List<int[]> allGuessStats = new List<int[]>();
 
             Console.WriteLine("How long should the sequence of dots be?");
             clearToGo = Int32.TryParse(Console.ReadLine(), out sequenceLength);
@@ -40,21 +40,36 @@ namespace Guess_Color_game
             List<Dot> answer = Dot.NewAnswer(sequenceLength, possibleColors);
 
             Console.WriteLine();
-            Console.WriteLine("R = Red\nG = Green\nB = Blue\nY = Yellow\nC = Cyan\nP = Purple\nW = White" +
-                $"\n\nPlease type {sequenceLength} colors with no spaces using only the characters provided above. e.g. YBWPRP");
-            clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out currentGuess);
+            Console.WriteLine("R = Red\nG = Green\nB = Blue\nY = Yellow\nC = Cyan\nP = Purple\nW = White\n");
 
-            while (!clearToGo)
+            do
             {
-                Console.WriteLine($"\nInvalid input. Please type {sequenceLength} colors with " +
-                    "no spaces using only the characters provided above. e.g. YBWPRP");
+                /*Console.WriteLine("\nThe correct answer is...");
+                Dot.PrintDots(answer);
+                Console.WriteLine();*/
+
+                Console.WriteLine($"Please type {sequenceLength} colors with no spaces using only the characters provided above. e.g. YBWPRP");
                 clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out currentGuess);
-            }
 
-            while (true)
-            {
-                NewTurn(ref allGuesses, ref currentGuess, ref clearToGo, ref sequenceLength);
-            }
+                while (!clearToGo)
+                {
+                    Console.WriteLine($"\nInvalid input. Please type {sequenceLength} colors with " +
+                        "no spaces using only the characters provided above. e.g. YBWPRP");
+                    clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out currentGuess);
+                }
+
+                allGuesses.Add(currentGuess);
+                allGuessStats.Add(new int[2] { MatchedPositions(answer, currentGuess), MatchedColors(answer, currentGuess) });
+                Dot.PrintGuessesInfo(allGuesses, allGuessStats);
+                Console.WriteLine();
+                
+            } while (allGuessStats[allGuessStats.Count - 1][0] != sequenceLength || 
+                allGuessStats[allGuessStats.Count - 1][1] != sequenceLength);
+
+            Console.Write("Hooray! The correct answer was");
+            Dot.PrintDots(answer);
+            Console.WriteLine($"\n\nIt took you {allGuessStats.Count} guesses to find the answer.");
+            Console.ReadLine();
         }
 
         /// <summary>
@@ -91,26 +106,60 @@ namespace Guess_Color_game
         }
 
         /// <summary>
-        /// Prints all previous guesses and asks the user to input a new guess
+        /// Returns the number of dots in currentGuess which match position and color with answer
         /// </summary>
-        /// <param name="allGuesses"></param>
+        /// <param name="answer"></param>
         /// <param name="currentGuess"></param>
-        /// <param name="clearToGo"></param>
-        /// <param name="sequenceLength"></param>
-        static void NewTurn(ref List<List<Dot>> allGuesses, ref List<Dot> currentGuess, ref bool clearToGo, ref int sequenceLength)
-        {   
-            allGuesses.Add(currentGuess);
-            Dot.PrintGuesses(allGuesses);
-            Console.WriteLine();
-            Console.WriteLine($"Please type {sequenceLength} colors with no spaces using only the characters provided above. e.g. YBWPRP");
-            clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out currentGuess);
+        /// <returns></returns>
+        static int MatchedPositions(List<Dot> answer, List<Dot> currentGuess)
+        {
+            int matches = 0;
 
-            while (!clearToGo)
+            for (int i = 0; i < answer.Count; i++)
             {
-                Console.WriteLine($"\nInvalid input. Please type {sequenceLength} colors with " +
-                    "no spaces using only the characters provided above. e.g. YBWPRP");
-                clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out currentGuess);
+                if (answer[i].Color == currentGuess[i].Color)
+                {
+                    matches++;
+                }
             }
+
+            return matches;
+        }
+
+        /// <summary>
+        /// Returns the number of dots in currentGuess which match the colors in answer
+        /// </summary>
+        /// <param name="answer"></param>
+        /// <param name="currentGuess"></param>
+        /// <returns></returns>
+        static int MatchedColors(List<Dot> answer, List<Dot> currentGuess)
+        {
+            int matches = 0;
+            List<string> tempAnswer = new List<string>();
+            List<string> tempGuess = new List<string>();
+
+            for (int i = 0; i < answer.Count; i++)
+            {
+                tempAnswer.Add(answer[i].Color);
+                tempGuess.Add(currentGuess[i].Color);
+            }
+
+            while (tempAnswer.Count > 0)
+            {
+                for (int i = 0; i < tempGuess.Count; i++)
+                {
+                    if (tempGuess[i] == tempAnswer[0])
+                    {
+                        matches++;
+                        tempGuess.RemoveAt(i);
+                        i = tempGuess.Count;
+                    }
+                }
+
+                tempAnswer.RemoveAt(0);
+            }
+
+            return matches;
         }
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Guess_Color_game
 {
-    class Dot //Hi github funny init?
+    class Dot
     {
-        string Symbol { get; set; } = " █";        //Saving ⚪ symbol for easy reference
-        string Color { get; set; }
+        string Symbol { get; set; } = " █";
+        public string Color { get; set; }
         static Random rng = new Random();
 
         public Dot(string color)
@@ -50,7 +50,7 @@ namespace Guess_Color_game
         /// Prints all members of list dots to the console in their associated colors
         /// </summary>
         /// <param name="dots"></param>
-        static void PrintDots(List<Dot> dots)
+        public static void PrintDots(List<Dot> dots)
         {
             foreach (Dot d in dots)
             {
@@ -95,15 +95,17 @@ namespace Guess_Color_game
         }
 
         /// <summary>
-        /// Prints all guesses to the console
+        /// Prints all guesses to the console along with their match statistics
         /// </summary>
         /// <param name="guesses"></param>
-        public static void PrintGuesses(List<List<Dot>> guesses)
+        /// <param name="guessStats"></param>
+        public static void PrintGuessesInfo(List<List<Dot>> guesses, List<int[]> guessStats)
         {
-            foreach (List<Dot> g in guesses)
+            for (int i = 0; i < guesses.Count; i++)
             {                
                 Console.WriteLine();
-                PrintDots(g);
+                PrintDots(guesses[i]);
+                Console.Write($"     Matched positions: {guessStats[i][0]}     Matched colors: {guessStats[i][1]}");
                 Console.WriteLine();
             }
         }
