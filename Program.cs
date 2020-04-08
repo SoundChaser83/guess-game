@@ -10,15 +10,11 @@ namespace Guess_Color_game
     {
         static void Main(string[] args)
         {
-            int sequenceLength;
-            int possibleColors;
-            bool clearToGo = false;
             List<List<Dot>> allGuesses = new List<List<Dot>>();
-            List<Dot> currentGuess = new List<Dot>();
             List<int[]> allGuessStats = new List<int[]>();
 
             Console.WriteLine("How long should the sequence of dots be?");
-            clearToGo = Int32.TryParse(Console.ReadLine(), out sequenceLength);
+            bool clearToGo = Int32.TryParse(Console.ReadLine(), out int sequenceLength);
 
             while (!clearToGo || sequenceLength < 1 || sequenceLength > 10)
             {
@@ -28,12 +24,12 @@ namespace Guess_Color_game
             }
 
             Console.WriteLine("\nHow many colors should be chosen from?");
-            clearToGo = Int32.TryParse(Console.ReadLine(), out possibleColors);
+            clearToGo = Int32.TryParse(Console.ReadLine(), out int possibleColors);
 
             while (!clearToGo || possibleColors < 3 || possibleColors > 7)
             {
                 Console.WriteLine("\nInvalid input. Please type a number between 3 and 7, inclusive.");
-                Console.WriteLine("How long should the sequence of dots be?");
+                Console.WriteLine("How many colors should be chosen from?");
                 clearToGo = Int32.TryParse(Console.ReadLine(), out possibleColors);
             }
 
@@ -49,7 +45,7 @@ namespace Guess_Color_game
                 Console.WriteLine();*/
 
                 Console.WriteLine($"Please type {sequenceLength} colors with no spaces using only the characters provided above. e.g. YBWPRP");
-                clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out currentGuess);
+                clearToGo = IsValidGuess(Console.ReadLine(), sequenceLength, out List<Dot> currentGuess);
 
                 while (!clearToGo)
                 {
@@ -63,8 +59,7 @@ namespace Guess_Color_game
                 Dot.PrintGuessesInfo(allGuesses, allGuessStats);
                 Console.WriteLine();
                 
-            } while (allGuessStats[allGuessStats.Count - 1][0] != sequenceLength || 
-                allGuessStats[allGuessStats.Count - 1][1] != sequenceLength);
+            } while (allGuessStats[allGuessStats.Count - 1][0] != sequenceLength);
 
             Console.Write("Hooray! The correct answer was");
             Dot.PrintDots(answer);

@@ -105,7 +105,7 @@ namespace Guess_Color_game
             {                
                 Console.WriteLine();
                 PrintDots(guesses[i]);
-                Console.Write($"     Matched positions: {guessStats[i][0]}     Matched colors: {guessStats[i][1]}");
+                Console.Write($"     Exact matches: {guessStats[i][0]}     Matched colors: {guessStats[i][1]}");
                 Console.WriteLine();
             }
         }
